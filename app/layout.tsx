@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme/theme-provider"
 import { cn } from "@/lib/utils"
-import { Navbar } from "@/components/navbar"
+import { ConvexClientProvider } from "@/components/ConvexClientProvider"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -31,7 +31,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <main className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
-            {children}
+            <ConvexClientProvider>{children}</ConvexClientProvider>
           </main>
         </ThemeProvider>
       </body>
