@@ -16,6 +16,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { authClient } from "@/lib/auth-client"
 import { useForm } from "@tanstack/react-form"
 
 export default function SignUpPage() {
@@ -29,7 +30,11 @@ export default function SignUpPage() {
       onSubmit: SignUpSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value)
+      await authClient.signUp.email({
+        name: value.name,
+        email: value.email,
+        password: value.password,
+      })
     },
   })
 
