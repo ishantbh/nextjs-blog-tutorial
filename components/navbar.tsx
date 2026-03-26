@@ -2,6 +2,7 @@
 
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { Button } from "@/components/ui/button"
+import { authClient } from "@/lib/auth-client"
 import { useConvexAuth } from "convex/react"
 import Link from "next/link"
 
@@ -42,7 +43,9 @@ export function Navbar() {
           </>
         )}
 
-        {!isLoading && isAuthenticated && <Button>Logout</Button>}
+        {!isLoading && isAuthenticated && (
+          <Button onClick={() => authClient.signOut()}>Logout</Button>
+        )}
 
         <ThemeToggle />
       </div>
