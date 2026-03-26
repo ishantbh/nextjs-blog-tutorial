@@ -11,3 +11,11 @@ export const SignUpSchema = z.object({
     .min(8, "Password must be atleast 8 characters long")
     .max(30, "Password must be less than 30 characters long"),
 })
+
+export const LoginSchema = z.object({
+  email: z.email({ error: "Invalid email" }),
+  password: z
+    .string()
+    .min(8, "Password must be atleast 8 characters long")
+    .max(30, "Password must be less than 30 characters long"),
+})
