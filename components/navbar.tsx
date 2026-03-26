@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button"
 import { authClient } from "@/lib/auth-client"
 import { useConvexAuth } from "convex/react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export function Navbar() {
   const { isAuthenticated, isLoading } = useConvexAuth()
+  const router = useRouter()
 
   return (
     <nav className="flex w-full items-center justify-between py-5">
@@ -44,7 +47,23 @@ export function Navbar() {
         )}
 
         {!isLoading && isAuthenticated && (
-          <Button onClick={() => authClient.signOut()}>Logout</Button>
+          <Button
+            onClick={() =>
+              authClient.signOut({
+                fetchOptions: {
+                  onSuccess: () => {
+                    toast.success("Logged out successfully")
+                    router.push("/")
+                  },
+                  onError: (error) => {
+                    toast.error(error.error.message)
+                  },
+                },
+              })
+            }
+          >
+            Logout
+          </Button>
         )}
 
         <ThemeToggle />
