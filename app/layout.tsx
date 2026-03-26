@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider"
 import { cn } from "@/lib/utils"
 import { ConvexClientProvider } from "@/components/ConvexClientProvider"
 import { getToken } from "@/lib/auth-server"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -38,6 +39,7 @@ export default async function RootLayout({
               {children}
             </ConvexClientProvider>
           </main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
