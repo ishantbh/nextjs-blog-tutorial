@@ -18,8 +18,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import { useForm } from "@tanstack/react-form"
+import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useTransition } from "react"
+import { toast } from "sonner"
 
 export default function LoginPage() {
+  const [isPending, startTransition] = useTransition()
+
+  const router = useRouter()
+
   const form = useForm({
     defaultValues: {
       email: "",
@@ -28,10 +36,21 @@ export default function LoginPage() {
     validators: {
       onSubmit: LoginSchema,
     },
-    onSubmit: async ({ value }) => {
-      await authClient.signIn.email({
-        email: value.email,
-        password: value.password,
+    onSubmit: ({ value }) => {
+      startTransition(async () => {
+        await authClient.signIn.email({
+          email: value.email,
+          password: value.password,
+          fetchOptions: {
+            onSuccess: () => {
+              toast.success("Logged in successfully")
+              router.push("/")
+            },
+            onError: (error) => {
+              toast.error(error.error.message ?? "Something went wrong")
+            },
+          },
+        })
       })
     },
   })
@@ -100,7 +119,16 @@ export default function LoginPage() {
               }}
             />
 
-            <Button type="submit">Login</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <span>Login</span>
+              )}
+            </Button>
           </FieldGroup>
         </form>
       </CardContent>
