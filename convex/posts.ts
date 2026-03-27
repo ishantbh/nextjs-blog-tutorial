@@ -1,5 +1,5 @@
 import { authComponent } from "@/convex/betterAuth/auth"
-import { mutation } from "./_generated/server"
+import { mutation, query } from "./_generated/server"
 import { ConvexError, v } from "convex/values"
 
 export const createPost = mutation({
@@ -18,5 +18,14 @@ export const createPost = mutation({
     })
 
     return newPostId
+  },
+})
+
+export const getPosts = query({
+  args: {},
+  handler: async (ctx) => {
+    const posts = await ctx.db.query("posts").order("desc").collect()
+
+    return posts
   },
 })
