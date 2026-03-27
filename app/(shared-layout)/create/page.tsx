@@ -17,9 +17,21 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { api } from "@/convex/_generated/api"
 import { useForm } from "@tanstack/react-form"
+import { useMutation } from "convex/react"
+import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useTransition } from "react"
+import { toast } from "sonner"
 
 export default function CreatePage() {
+  const [isPending, startTransition] = useTransition()
+
+  const router = useRouter()
+
+  const mutation = useMutation(api.posts.createPost)
+
   const form = useForm({
     defaultValues: {
       title: "",
@@ -29,7 +41,16 @@ export default function CreatePage() {
       onSubmit: PostSchema,
     },
     onSubmit: ({ value }) => {
-      console.log(value)
+      startTransition(() => {
+        mutation({
+          title: value.title,
+          body: value.content,
+        })
+
+        toast.success("Post created successfully")
+
+        router.push("/")
+      })
     },
   })
 
@@ -106,7 +127,16 @@ export default function CreatePage() {
                 }}
               />
 
-              <Button>Create Post</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    <span>Loading...</span>
+                  </>
+                ) : (
+                  <span>Create Post</span>
+                )}
+              </Button>
             </FieldGroup>
           </form>
         </CardContent>
