@@ -1,5 +1,6 @@
 "use client"
 
+import { createBlogAction } from "@/app/actions"
 import { PostSchema } from "@/app/schemas/blog"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,20 +18,12 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { api } from "@/convex/_generated/api"
 import { useForm } from "@tanstack/react-form"
-import { useMutation } from "convex/react"
 import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useTransition } from "react"
-import { toast } from "sonner"
 
 export default function CreatePage() {
   const [isPending, startTransition] = useTransition()
-
-  const router = useRouter()
-
-  const mutation = useMutation(api.posts.createPost)
 
   const form = useForm({
     defaultValues: {
@@ -41,15 +34,8 @@ export default function CreatePage() {
       onSubmit: PostSchema,
     },
     onSubmit: ({ value }) => {
-      startTransition(() => {
-        mutation({
-          title: value.title,
-          body: value.content,
-        })
-
-        toast.success("Post created successfully")
-
-        router.push("/")
+      startTransition(async () => {
+        await createBlogAction(value)
       })
     },
   })
